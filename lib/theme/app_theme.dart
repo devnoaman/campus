@@ -19,7 +19,7 @@ ThemeData appTheme() {
         900: Color(0xFF161E54),
       },
     ),
-    fontFamily: 'antonio',
+    fontFamily: 'Cairo',
     primaryColor: kPrimaryColor,
     scaffoldBackgroundColor: Colors.white,
     visualDensity: VisualDensity.adaptivePlatformDensity,
