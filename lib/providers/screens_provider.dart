@@ -1,6 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+
+final screenProvider = ChangeNotifierProvider((ref) {
+  return Screen();
+});
 
 class Screen with ChangeNotifier {
   int screen = 0;

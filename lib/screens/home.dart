@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 List<Widget> widgets = [MyHomeScreen(), News(), Discover(), Calender()];
 
 class Home extends StatelessWidget {
+  static const String route = '/home';
+
   const Home({Key? key}) : super(key: key);
 
   @override

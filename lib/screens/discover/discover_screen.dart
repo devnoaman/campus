@@ -1,19 +1,48 @@
+import 'dart:async';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:swipe_refresh/swipe_refresh.dart';
 
+import 'package:campus/data/constants.dart';
 import 'package:campus/helpers/helpers.dart';
+import 'package:campus/models/apps_model.dart';
+import 'package:campus/models/discover_model.dart';
+import 'package:campus/screens/discover/discover_provider.dart';
 
-class Discover extends StatelessWidget {
-  const Discover({Key? key}) : super(key: key);
+class Discover extends HookConsumerWidget {
+  Discover({Key? key}) : super(key: key);
+  final _controller = StreamController<SwipeRefreshState>.broadcast();
+  // final _controller = useStreamController<SwipeRefreshState>().;
+
+  Stream<SwipeRefreshState> get _stream => _controller.stream;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var dis = ref.watch(discoverProvider);
+    var apps = ref.watch(appsProvider);
+
+    Future<void> _refresh() async {
+      await Future<void>.delayed(const Duration(seconds: 3));
+      // when all needed is done change state
+      ref.refresh(discoverProvider);
+      ref.refresh(appsProvider);
+      _controller.sink.add(SwipeRefreshState.hidden);
+    }
+
     return Container(
       width: getSize(context).width,
       height: getSize(context).height,
-      child: ListView(
+      child: SwipeRefresh.cupertino(
+        stateStream: _stream,
+        onRefresh: _refresh,
         children: [
+          // Text(dis.length.toString()),
+
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
@@ -29,7 +58,7 @@ class Discover extends StatelessWidget {
           ),
           const Padding(
             padding: EdgeInsets.all(8.0),
-            child: const Text(
+            child: Text(
               'Find free, high-quality educational materials, including activities and apps, that you can rely on. ',
               textAlign: TextAlign.justify,
               style: TextStyle(
@@ -55,22 +84,45 @@ class Discover extends StatelessWidget {
               onTap: () {},
             ),
           ),
-          Container(
-            width: getSize(context).width,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: 5,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: const DiscoverCard(
-                    title: 'Discover the Google Workspace apps',
-                  ),
-                );
-              },
-            ),
-          ),
+          // SizedBox(
+          //   width: getSize(context).width,
+          //   child: ListView.builder(
+          //     shrinkWrap: true,
+          //     itemCount: 5,
+          //     physics: const NeverScrollableScrollPhysics(),
+          //     itemBuilder: (BuildContext context, int index) {
+          //       return const Padding(
+          //         padding: EdgeInsets.all(16.0),
+          //         child: DiscoverCard(
+          //           title: 'Discover the Google Workspace apps',
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
+          dis.when(data: (data) {
+            return SizedBox(
+              width: getSize(context).width,
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: (data.length >= 5) ? 5 : data.length,
+                itemBuilder: (context, index) {
+                  return DiscoverCard(
+                    model: data[index],
+                  );
+                },
+              ),
+            );
+          }, error: (error, st) {
+            return Center(
+              child: Text(error.toString()),
+            );
+          }, loading: () {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DiscoverSeperator(
@@ -78,21 +130,33 @@ class Discover extends StatelessWidget {
               onTap: () {},
             ),
           ),
-          Container(
-            width: getSize(context).width,
-            height: 200,
-            child: ListView.builder(
-              itemCount: 5,
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: DiscoverAppsCard(),
-                );
-              },
-            ),
-          )
+          apps.when(data: (data) {
+            return Container(
+              width: getSize(context).width,
+              height: 200,
+              child: ListView.builder(
+                itemCount: (data.length >= 5) ? 5 : data.length,
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DiscoverAppsCard(
+                      model: data[index],
+                    ),
+                  );
+                },
+              ),
+            );
+          }, error: (error, st) {
+            return Center(
+              child: Text(error.toString()),
+            );
+          }, loading: () {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
         ],
       ),
     );
@@ -127,14 +191,17 @@ class DiscoverSeperator extends StatelessWidget {
 }
 
 class DiscoverCard extends StatelessWidget {
-  final String title;
+  final String? title;
+  final DiscoverModel model;
   const DiscoverCard({
     Key? key,
-    required this.title,
+    this.title,
+    required this.model,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final format = new DateFormat('yyyy-MM-ddTHH:mm:ssZ', 'en-US');
     return Container(
       width: getSize(context).width,
       // height: 200,
@@ -144,18 +211,23 @@ class DiscoverCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title,
+              model.title.toString(),
               style: const TextStyle(fontSize: 18),
             ),
             const Divider(),
-            const Text('12:12 pm'),
+            Text(DateTime.parse(model.created.toString()).toIso8601String()),
             const SizedBox(
               height: 18,
             ),
-            const Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eros ligula, tincidunt eu libero at, ultricies lacinia magna. Maecenas a libero nisl. Nullam luctus ex dolor, ut molestie metus facilisis at.',
-              textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  model.sender.toString(),
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
             ),
             const SizedBox(
               height: 18,
@@ -169,6 +241,11 @@ class DiscoverCard extends StatelessWidget {
                   height: 200,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
+                    image: DecorationImage(
+                        image: CachedNetworkImageProvider(
+                          '$workingUrl' + model.cover.toString(),
+                        ),
+                        fit: BoxFit.cover),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.06),
@@ -196,7 +273,9 @@ class DiscoverCard extends StatelessWidget {
                       title: 'read more',
                       onTap: () {
                         print('clicked');
-                        Navigator.of(context).pushNamed('/web');
+                        // Navigator.of(context).pushNamed('/web');
+                        Navigator.of(context)
+                            .pushNamed('/discoverContent', arguments: model);
                       },
                     ),
                   ),
@@ -274,7 +353,11 @@ class BlogsButton extends StatelessWidget {
 }
 
 class DiscoverAppsCard extends StatelessWidget {
-  const DiscoverAppsCard({Key? key}) : super(key: key);
+  final AppsModel model;
+  const DiscoverAppsCard({
+    Key? key,
+    required this.model,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -286,6 +369,9 @@ class DiscoverAppsCard extends StatelessWidget {
           height: 100,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
+            image: DecorationImage(
+                image: CachedNetworkImageProvider(
+                    workingUrl + model.image.toString())),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.06),
@@ -305,8 +391,8 @@ class DiscoverAppsCard extends StatelessWidget {
         const SizedBox(
           height: 16,
         ),
-        const Text(
-          'app name here',
+        Text(
+          model.title.toString(),
           style: TextStyle(fontSize: 18),
         )
       ],
