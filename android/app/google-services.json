@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "418908849899",
+    "project_id": "campus-iq-app",
+    "storage_bucket": "campus-iq-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418908849899:android:666c8a018f0b274702a0ae",
+        "android_client_info": {
+          "package_name": "com.noonstudio.campus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "418908849899-bsl4j1fl0kvah9chq19aaurbe174nq7f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSoyjA3pgDKSq8DV92Dz-_jMbDVwJYyik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "418908849899-bsl4j1fl0kvah9chq19aaurbe174nq7f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "418908849899-1vaklp227vmohqa627uu75uhc49sdl20.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.noonstudio.campus"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

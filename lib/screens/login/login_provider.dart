@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:campus/data/constants.dart';
 import 'package:campus/data/save.dart';
+import 'package:campus/main.dart';
+import 'package:campus/screens/drawer/drawer.dart';
 import 'package:campus/screens/login/login_widgets.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,10 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-incrementCounter(String name) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('fullName', name);
-}
+// incrementCounter(String name) async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   prefs.setString('fullName', name);
+// }
 
 class LoginProvider extends ChangeNotifier {
   ScreenState state = ScreenState.idle;
@@ -49,13 +51,13 @@ class LoginProvider extends ChangeNotifier {
           print(data);
           print(data['account']['email']);
 
-          saveFullName(data['account']['first_name'] +
+          await saveFullName(data['account']['first_name'] +
               ' ' +
               data['account']['last_name']);
-          saveEmail(data['account']['first_name']);
-          saveToken(data['token']['access']);
-          saveUserID(data['account']['id']);
-
+          await saveEmail(data['account']['first_name']);
+          await saveToken(data['token']['access']);
+          await saveUserID(data['account']['id']);
+          await container.refresh(userNameProvider);
           Navigator.of(context).pushReplacementNamed('/home');
         } else {
           // showErrorDialog(context, data['errors']);

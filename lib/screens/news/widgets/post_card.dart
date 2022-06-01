@@ -1,10 +1,14 @@
-import 'package:campus/data/constants.dart';
-import 'package:campus/helpers/helpers.dart';
 import 'package:flutter/material.dart';
 
+import 'package:campus/data/constants.dart';
+import 'package:campus/helpers/helpers.dart';
+import 'package:campus/models/news_model/news_model.dart';
+
 class PostCard extends StatelessWidget {
+  final NewsModel model;
   const PostCard({
     Key? key,
+    required this.model,
   }) : super(key: key);
 
   @override
@@ -31,9 +35,6 @@ class PostCard extends StatelessWidget {
                     height: 36,
                     decoration: const BoxDecoration(
                       color: Colors.amber,
-                      // image: DecorationImage(
-                      //     image: AssetImage('assets/images/Ellipse4.png'),
-                      //     fit: BoxFit.fitWidth),
                       borderRadius: BorderRadius.all(Radius.elliptical(36, 36)),
                     ),
                   ),
@@ -41,8 +42,9 @@ class PostCard extends StatelessWidget {
                     width: 8,
                   ),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('post title',
+                      Text(model.sender.toString(),
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               color: Color.fromRGBO(22, 30, 84, 1),
@@ -54,7 +56,7 @@ class PostCard extends StatelessWidget {
                               height: 1.5 /*PERCENT not supported*/
                               )),
                       Text(
-                        '2021/11/26',
+                        model.created.toString(),
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             color: Color.fromRGBO(22, 30, 84, 1),
@@ -75,9 +77,9 @@ class PostCard extends StatelessWidget {
             )),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: kpadding),
-              child: Text('description',
+              child: Text(model.description.toString(),
                   textAlign: TextAlign.left,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Color.fromRGBO(22, 30, 84, 1),
                       fontFamily: 'Lato',
                       fontSize: 16,
@@ -92,7 +94,11 @@ class PostCard extends StatelessWidget {
               width: getSize(context).width,
               decoration: BoxDecoration(
                 borderRadius: defaultborder,
-                color: const Color(0xFFFF0000),
+                image: DecorationImage(
+                    image: NetworkImage(
+                      workingUrl + model.cover.toString(),
+                    ),
+                    fit: BoxFit.cover),
               ),
             ),
           ],

@@ -1,24 +1,26 @@
 import 'package:campus/compunents/widgets/drawer_button.dart';
 import 'package:campus/data/save.dart';
 import 'package:campus/helpers/helpers.dart';
-import 'package:campus/providers/user_name_provider.dart';
 import 'package:campus/screens/documents/documents.dart';
 import 'package:campus/screens/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:provider/provider.dart';
 
-import 'package:campus/base.dart';
 // import 'package:campus/helpers/helpers.dart';
-import 'package:campus/providers/app_language.dart';
 import 'package:campus/providers/screens_provider.dart';
 import 'package:campus/screens/profile.dart';
 import 'package:campus/screens/settings/settings.dart';
 import 'package:campus/theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// final userNameProvider = FutureProvider((ref) async {
-//   return getFullName();
-// });
+final userNameProvider = FutureProvider<String>((_) async {
+  // String v = await getFullName();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var fullName = prefs.getString('fullName');
+
+  print('value ' + fullName.toString());
+  return fullName.toString();
+});
 
 class MyDrawer extends ConsumerWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -26,7 +28,6 @@ class MyDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var scr = ref.watch(screenProvider);
-    var usr = ref.watch(userNameProvider);
     // AppLanguage appLanguage = Provider.of<AppLanguage>(context);
     return Material(
       child: Container(
@@ -36,7 +37,7 @@ class MyDrawer extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 32,
             ),
             Row(
@@ -53,17 +54,21 @@ class MyDrawer extends ConsumerWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(75)),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
-                      Text(usr.value,
-                          style: TextStyle(color: Colors.white, fontSize: 24)),
+                      ref.watch(userNameProvider).maybeWhen(
+                            data: (d) => Text(d,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24)),
+                            orElse: () => Text('error'),
+                          ),
                     ],
                   ),
                 ),
               ],
             ),
-            Divider(),
+            const Divider(),
             // Spacer(),
             DrawerButton(
               title: 'الاعدادات',
