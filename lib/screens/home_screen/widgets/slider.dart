@@ -24,7 +24,7 @@ class MySlider extends HookConsumerWidget {
               width: MediaQuery.of(context).size.width,
               // margin: EdgeInsets.symmetric(vertical: 2.0),
               decoration: BoxDecoration(
-                image: DecorationImage(image: AssetImage('$workingUrl/${i.cover}')),
+                image: DecorationImage(image: AssetImage('$workingUrl${i.cover}')),
                   color: Colors.amber, borderRadius: defaultborder),
             );
       }).toList(),
