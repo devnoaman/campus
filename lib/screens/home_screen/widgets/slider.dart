@@ -1,12 +1,15 @@
 import 'package:campus/helpers/helpers.dart';
+import 'package:campus/screens/adds/adds_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class MySlider extends StatelessWidget {
+class MySlider extends HookConsumerWidget {
   const MySlider({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    var list = ref.watch(addsProvider);
     return CarouselSlider(
       options: CarouselOptions(
           height: 200.0,
@@ -14,7 +17,7 @@ class MySlider extends StatelessWidget {
           viewportFraction: 0.9,
           enlargeCenterPage: true,
           autoPlay: true),
-      items: [1, 2, 3, 4, 5].map((i) {
+      items: list.map((i) {
         return Builder(
           builder: (BuildContext context) {
             return Container(

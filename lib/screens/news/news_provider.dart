@@ -6,12 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 final newsProvider = FutureProvider((ref) async {
-  var url = Uri.parse('$workingUrl/api/posts/get');
+  var url = Uri.parse('$workingUrl/news');
 
   var res = await http.get(
     url,
   );
-  final List list = json.decode(res.body);
-  print(list);
-  return list.map((e) => NewsModel.fromJson(e)).toList();
+  // print(json.decode(res.body));
+  final NewsModel list =
+      NewsModel.fromJson(json.decode(res.body)); // json.decode(res.body);
+  // print(list);
+  return list.news;
+  // return list.map((e) => NewsModel.fromJson(e).news).toList();
 });

@@ -21,7 +21,7 @@ class News extends ConsumerWidget {
         child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: (data.length >= 5) ? 5 : data.length,
+          itemCount: (data!.length >= 5) ? 5 : data.length,
           itemBuilder: (context, index) {
             return PostCard(
               model: data[index],

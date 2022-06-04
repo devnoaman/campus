@@ -67,7 +67,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '418908849899',
     projectId: 'campus-iq-app',
     storageBucket: 'campus-iq-app.appspot.com',
-    iosClientId: '418908849899-1vaklp227vmohqa627uu75uhc49sdl20.apps.googleusercontent.com',
+    iosClientId:
+        '418908849899-1vaklp227vmohqa627uu75uhc49sdl20.apps.googleusercontent.com',
     iosBundleId: 'com.noonstudio.campus',
   );
 
@@ -77,7 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '418908849899',
     projectId: 'campus-iq-app',
     storageBucket: 'campus-iq-app.appspot.com',
-    iosClientId: '418908849899-1vaklp227vmohqa627uu75uhc49sdl20.apps.googleusercontent.com',
+    iosClientId:
+        '418908849899-1vaklp227vmohqa627uu75uhc49sdl20.apps.googleusercontent.com',
     iosBundleId: 'com.noonstudio.campus',
   );
 }

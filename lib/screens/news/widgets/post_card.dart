@@ -1,11 +1,11 @@
+import 'package:campus/models/news_model/news.dart';
 import 'package:flutter/material.dart';
 
 import 'package:campus/data/constants.dart';
 import 'package:campus/helpers/helpers.dart';
-import 'package:campus/models/news_model/news_model.dart';
 
 class PostCard extends StatelessWidget {
-  final NewsModel model;
+  final News model;
   const PostCard({
     Key? key,
     required this.model,
@@ -13,6 +13,7 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(model);
     return Padding(
       padding: EdgeInsets.all(kpadding),
       child: Container(
@@ -56,7 +57,7 @@ class PostCard extends StatelessWidget {
                               height: 1.5 /*PERCENT not supported*/
                               )),
                       Text(
-                        model.created.toString(),
+                        model.createdAt.toString(),
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             color: Color.fromRGBO(22, 30, 84, 1),
@@ -96,7 +97,9 @@ class PostCard extends StatelessWidget {
                 borderRadius: defaultborder,
                 image: DecorationImage(
                     image: NetworkImage(
-                      workingUrl + model.cover.toString(),
+                      (model.cover == null)
+                          ? 'https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640'
+                          : workingUrl + '/' + model.cover.toString(),
                     ),
                     fit: BoxFit.cover),
               ),

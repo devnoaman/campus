@@ -1,3 +1,4 @@
+import 'package:campus/screens/calender/calender.dart';
 import 'package:campus/screens/home_screen/fragments/student_view.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,16 @@ class MyHomeScreen extends StatelessWidget {
                         hpush(context, ViewStudentsFragment());
                       },
                       icon: Icons.add,
-                    )
+                    ),
+                    ServiceCard(
+                      title: 'المهام',
+                      onTap: () {
+                        hpush(context, Calender());
+                      },
+                      icon: Icons.document_scanner,
+                    ),
+
+                    //
                   ]),
             ),
             other: Padding(

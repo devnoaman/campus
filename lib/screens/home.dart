@@ -10,7 +10,11 @@ import 'package:campus/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-List<Widget> widgets = [MyHomeScreen(), News(), Discover(), Calender()];
+List<Widget> widgets = [
+  MyHomeScreen(),
+  News(),
+  Discover(),
+];
 
 class Home extends StatelessWidget {
   static const String route = '/home';
@@ -44,10 +48,10 @@ class Home extends StatelessWidget {
               icon: Icon(Icons.camera),
               label: 'Discover',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today),
-              label: 'Events',
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.calendar_today),
+            //   label: 'Events',
+            // ),
           ],
           currentIndex: provider.activeScreen,
           selectedItemColor: kPrimaryColor,

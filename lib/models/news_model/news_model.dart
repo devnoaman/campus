@@ -1,39 +1,20 @@
-class NewsModel {
-  String? id;
-  String? title;
-  String? cover;
-  String? description;
-  String? sender;
-  String? created;
-  String? updated;
+import 'news.dart';
 
-  NewsModel({
-    this.id,
-    this.title,
-    this.cover,
-    this.description,
-    this.sender,
-    this.created,
-    this.updated,
-  });
+class NewsModel {
+  int? length;
+  List<News>? news;
+
+  NewsModel({this.length, this.news});
 
   factory NewsModel.fromJson(Map<String, dynamic> json) => NewsModel(
-        id: json['id'] as String?,
-        title: json['title'] as String?,
-        cover: json['cover'] as String?,
-        description: json['description'] as String?,
-        sender: json['sender'] as String?,
-        created: json['created'] as String?,
-        updated: json['updated'] as String?,
+        length: json['length'] as int?,
+        news: (json['News'] as List<dynamic>?)
+            ?.map((e) => News.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'cover': cover,
-        'description': description,
-        'sender': sender,
-        'created': created,
-        'updated': updated,
+        'length': length,
+        'News': news?.map((e) => e.toJson()).toList(),
       };
 }
