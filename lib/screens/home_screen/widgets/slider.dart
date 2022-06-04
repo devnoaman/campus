@@ -1,3 +1,4 @@
+import 'package:campus/data/constants.dart';
 import 'package:campus/helpers/helpers.dart';
 import 'package:campus/screens/adds/adds_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -18,16 +19,14 @@ class MySlider extends HookConsumerWidget {
           enlargeCenterPage: true,
           autoPlay: true),
       items: list.map((i) {
-        return Builder(
-          builder: (BuildContext context) {
-            return Container(
+        return
+          Container(
               width: MediaQuery.of(context).size.width,
               // margin: EdgeInsets.symmetric(vertical: 2.0),
               decoration: BoxDecoration(
+                image: DecorationImage(image: AssetImage('$workingUrl/${i.cover}')),
                   color: Colors.amber, borderRadius: defaultborder),
             );
-          },
-        );
       }).toList(),
     );
   }
