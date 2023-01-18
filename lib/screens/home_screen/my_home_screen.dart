@@ -1,5 +1,8 @@
 import 'package:campus/screens/calender/calender.dart';
 import 'package:campus/screens/home_screen/fragments/student_view.dart';
+import 'package:campus/screens/services/research.dart';
+import 'package:campus/screens/services/service.dart';
+import 'package:campus/screens/services/time_table.dart';
 import 'package:flutter/material.dart';
 
 import 'package:campus/data/constants.dart';
@@ -22,11 +25,14 @@ class MyHomeScreen extends StatelessWidget {
         children: [
           MySlider(),
           Section(
-            title: 'Services',
+            title: 'الخدمات',
             child: Container(
               width: getSize(context).width,
               // height: 120,
-              child: ListView(
+              child: GridView(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                  ),
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
@@ -39,9 +45,30 @@ class MyHomeScreen extends StatelessWidget {
                       icon: Icons.add,
                     ),
                     ServiceCard(
-                      title: 'المهام',
+                      title: 'الاحداث',
                       onTap: () {
                         hpush(context, Calender());
+                      },
+                      icon: Icons.document_scanner,
+                    ),
+                    ServiceCard(
+                      title: 'جدول المهام',
+                      onTap: () {
+                        hpush(context, const TimeTable());
+                      },
+                      icon: Icons.document_scanner,
+                    ),
+                    ServiceCard(
+                      title: 'دليل الترقيات',
+                      onTap: () {
+                        hpush(context, ServiceScreen());
+                      },
+                      icon: Icons.document_scanner,
+                    ),
+                    ServiceCard(
+                      title: 'المواقع البحثية',
+                      onTap: () {
+                        hpush(context, ResearchScreen());
                       },
                       icon: Icons.document_scanner,
                     ),
@@ -49,16 +76,16 @@ class MyHomeScreen extends StatelessWidget {
                     //
                   ]),
             ),
-            other: Padding(
-              padding: EdgeInsets.symmetric(horizontal: kpadding),
-              child: ElevatedButton(
-                onPressed: () {},
-                // height: 300,
-                // width: 100,
-                child: Text('all'),
-                // color: Colors.red,
-              ),
-            ),
+            // other: Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: kpadding),
+            //   child: ElevatedButton(
+            //     onPressed: () {},
+            //     // height: 300,
+            //     // width: 100,
+            //     child: Text('all'),
+            //     // color: Colors.red,
+            //   ),
+            // ),
           )
         ],
       ),
@@ -84,7 +111,7 @@ class ServiceCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: 120,
+          // height: 120,
           width: getSize(context).width,
           decoration: BoxDecoration(
               color: Colors.white,
@@ -93,10 +120,7 @@ class ServiceCard extends StatelessWidget {
               ],
               borderRadius: BorderRadius.circular(12)),
           child: Center(
-            child: ListTile(
-              leading: Icon(icon),
-              title: Text(title),
-            ),
+            child: Text(title),
           ),
         ),
       ),

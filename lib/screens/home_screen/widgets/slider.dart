@@ -9,7 +9,7 @@ class MySlider extends HookConsumerWidget {
   const MySlider({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     var list = ref.watch(addsProvider);
     return CarouselSlider(
       options: CarouselOptions(
@@ -19,14 +19,16 @@ class MySlider extends HookConsumerWidget {
           enlargeCenterPage: true,
           autoPlay: true),
       items: list.map((i) {
-        return
-          Container(
-              width: MediaQuery.of(context).size.width,
-              // margin: EdgeInsets.symmetric(vertical: 2.0),
-              decoration: BoxDecoration(
-                image: DecorationImage(image: AssetImage('$workingUrl${i.cover}')),
-                  color: Colors.amber, borderRadius: defaultborder),
-            );
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          // margin: EdgeInsets.symmetric(vertical: 2.0),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: NetworkImage('$workingUrl/${i.cover}'),
+                  fit: BoxFit.cover),
+              color: Colors.amber,
+              borderRadius: defaultborder),
+        );
       }).toList(),
     );
   }

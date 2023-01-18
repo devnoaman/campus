@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:campus/models/apps_model/app.dart';
+import 'package:campus/models/apps_model/apps_model.dart';
+import 'package:campus/models/discover_model/discover.dart' as dis;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:campus/models/discover_model/discover_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,6 +17,7 @@ import 'package:campus/helpers/helpers.dart';
 import 'package:campus/models/apps_model.dart';
 import 'package:campus/models/discover_model.dart';
 import 'package:campus/screens/discover/discover_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Discover extends HookConsumerWidget {
   Discover({Key? key}) : super(key: key);
@@ -72,7 +77,10 @@ class Discover extends HookConsumerWidget {
           Container(
             width: getSize(context).width,
             height: 200,
-            color: Colors.black,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/apps.jpeg'),
+                    fit: BoxFit.cover)),
           ),
           const SizedBox(
             height: 18,
@@ -103,10 +111,11 @@ class Discover extends HookConsumerWidget {
           dis.when(data: (data) {
             return SizedBox(
               width: getSize(context).width,
+              //todo
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: (data.length >= 5) ? 5 : data.length,
+                itemCount: (data!.length >= 5) ? 5 : data.length,
                 itemBuilder: (context, index) {
                   return DiscoverCard(
                     model: data[index],
@@ -130,12 +139,15 @@ class Discover extends HookConsumerWidget {
               onTap: () {},
             ),
           ),
+
+//todo
+
           apps.when(data: (data) {
             return Container(
               width: getSize(context).width,
               height: 200,
               child: ListView.builder(
-                itemCount: (data.length >= 5) ? 5 : data.length,
+                itemCount: (data!.length >= 5) ? 5 : data.length,
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
@@ -192,7 +204,7 @@ class DiscoverSeperator extends StatelessWidget {
 
 class DiscoverCard extends StatelessWidget {
   final String? title;
-  final DiscoverModel model;
+  final dis.Discover model;
   const DiscoverCard({
     Key? key,
     this.title,
@@ -201,7 +213,7 @@ class DiscoverCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final format = new DateFormat('yyyy-MM-ddTHH:mm:ssZ', 'en-US');
+    // final format = new DateFormat('yyyy-MM-ddTHH:mm:ssZ', 'en-US');
     return Container(
       width: getSize(context).width,
       // height: 200,
@@ -215,7 +227,7 @@ class DiscoverCard extends StatelessWidget {
               style: const TextStyle(fontSize: 18),
             ),
             const Divider(),
-            Text(DateTime.parse(model.created.toString()).toIso8601String()),
+            Text(DateTime.parse(model.createdAt.toString()).toIso8601String()),
             const SizedBox(
               height: 18,
             ),
@@ -353,7 +365,7 @@ class BlogsButton extends StatelessWidget {
 }
 
 class DiscoverAppsCard extends StatelessWidget {
-  final AppsModel model;
+  final App model;
   const DiscoverAppsCard({
     Key? key,
     required this.model,
@@ -361,41 +373,49 @@ class DiscoverAppsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                    workingUrl + model.image.toString())),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                spreadRadius: 1,
-                blurRadius: 6,
-                offset: const Offset(0, 1), // changes position of shadow
+    return InkWell(
+      onTap: () async {
+        var uri = Uri.parse(model.link.toString());
+        if (!await launchUrl(uri)) print('Could not launch $uri');
+
+        // return true;
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              image: DecorationImage(
+                  image: CachedNetworkImageProvider(
+                      workingUrl + '/' + model.img.toString())),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  spreadRadius: 1,
+                  blurRadius: 6,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+              color: const Color(0xFF77C9CC),
+              border: Border.all(
+                // color: Theme.of(context).primaryColor,
+                color: Colors.transparent,
+                width: 1,
               ),
-            ],
-            color: const Color(0xFF77C9CC),
-            border: Border.all(
-              // color: Theme.of(context).primaryColor,
-              color: Colors.transparent,
-              width: 1,
             ),
           ),
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        Text(
-          model.title.toString(),
-          style: TextStyle(fontSize: 18),
-        )
-      ],
+          const SizedBox(
+            height: 16,
+          ),
+          Text(
+            model.title.toString(),
+            style: TextStyle(fontSize: 18),
+          )
+        ],
+      ),
     );
   }
 }

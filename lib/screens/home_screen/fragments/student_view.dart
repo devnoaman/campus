@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:campus/data/save.dart';
 import 'package:campus/models/student_list_model.dart';
 import 'package:campus/screens/home/student_model/student_model.dart';
+import 'package:campus/screens/login/state/state.dart';
 import 'package:open_file/open_file.dart';
+import 'package:intl/intl.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus/data/constants.dart';
@@ -27,6 +30,10 @@ class ViewStudentsFragment extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // The key to be used when accessing SliverAnimatedListState
+    final GlobalKey<SliverAnimatedListState> _listKey =
+        GlobalKey<SliverAnimatedListState>();
+
     var students = ref.watch(stdentsListProvider);
     var count = ref.watch(attendedCountProvider);
     var notAttende = ref.watch(notAttendedCountProvider);
@@ -43,6 +50,8 @@ class ViewStudentsFragment extends HookConsumerWidget {
         primary: true,
         slivers: <Widget>[
           SliverAppBar(
+            snap: true,
+            floating: true,
             actions: [
               IconButton(
                   onPressed: () {
@@ -71,23 +80,41 @@ class ViewStudentsFragment extends HookConsumerWidget {
               ],
             ),
           ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              width: getSize(context).width,
-              height: getSize(context).height,
-              child: ListView(
-                  children: students
-                      .map(
-                        (e) => ProviderScope(
-                          overrides: [
-                            _currentStudent.overrideWithValue(e),
-                          ],
-                          child: StudentsAttendanceCard(e: e),
-                        ),
-                      )
-                      .toList()),
-            ),
-          ),
+          SliverAnimatedList(
+              key: _listKey,
+              findChildIndexCallback: (k) {
+                print(k);
+              },
+              initialItemCount: students.length,
+              itemBuilder: (context, index, animation) {
+                return ProviderScope(
+                  overrides: [
+                    _currentStudent.overrideWithValue(students[index]),
+                  ],
+                  child: SizeTransition(
+                      sizeFactor: animation,
+                      child: StudentsAttendanceCard(e: students[index])),
+                );
+              }),
+
+          // SliverToBoxAdapter(
+          //   child: SizedBox(
+          //     width: getSize(context).width,
+          //     height: getSize(context).height,
+          //     child: ListView(
+          //       physics: NeverScrollableScrollPhysics(),
+          //         children: students
+          //             .map(
+          //               (e) => ProviderScope(
+          //                 overrides: [
+          //                   _currentStudent.overrideWithValue(e),
+          //                 ],
+          //                 child: StudentsAttendanceCard(e: e),
+          //               ),
+          //             )
+          //             .toList()),
+          //   ),
+          // ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -102,7 +129,7 @@ class ViewStudentsFragment extends HookConsumerWidget {
           Sheet sheetObject = excel['attendance of second stage'];
 
           var val = ref.watch(stdentsListProvider);
-          genrateFile(val);
+          genrateFile(val, count, notAttende);
           // val.whenOrNull(
           //   loaded: (valu) async {
           //     // print('main');
@@ -148,7 +175,12 @@ class ViewStudentsFragment extends HookConsumerWidget {
   }
 }
 
-genrateFile(List<StudentListModel> list) async {
+genrateFile(List<StudentListModel> list, int count, int count2) async {
+  DateTime now = DateTime.now();
+  String stage = await getStage();
+  String division = await getDivision();
+
+  String formattedDate = DateFormat('yyyy-MM-dd').format(now);
   final xls.Workbook workbook = xls.Workbook(1);
   final xls.Worksheet sheet = workbook.worksheets[0];
   sheet.isRightToLeft = true;
@@ -162,7 +194,7 @@ genrateFile(List<StudentListModel> list) async {
   final xls.Range range2 = sheet.getRangeByName('A2:E2');
   range2.merge();
   sheet.getRangeByName('a1').setText('غيابات وحضور الطلبة');
-  sheet.getRangeByName('a2').setText('يوم الاربعاء ٢٠٢٠ - ٥ - ٢٥');
+  sheet.getRangeByName('a2').setText(formattedDate);
   range1.cellStyle.hAlign = xls.HAlignType.center;
   range2.cellStyle.hAlign = xls.HAlignType.center;
 
@@ -181,18 +213,24 @@ genrateFile(List<StudentListModel> list) async {
         .getRangeByName('B${(idx + 4)}')
         .setText((val.isAttende!) ? "حاضر" : "غائب");
   }).toList();
+  sheet.getRangeByName('A${(list.length + 4)}').setText("عدد الحضور الكلي");
+  final xls.Range range3 =
+      sheet.getRangeByName('B${(list.length + 4)}:E${(list.length + 4)}');
+  range1.merge();
+  sheet.getRangeByName('B${(list.length + 4)}').setText(count.toString());
+  sheet.getRangeByName('A${(list.length + 5)}').setText("عدد الغياب الكلي");
+  sheet.getRangeByName('B${(list.length + 5)}').setText(count2.toString());
+
   final List<int> bytes = workbook.saveAsStream();
   print('workbook');
   final directory = await getApplicationDocumentsDirectory();
 
   final Future<File> file =
-      File('${directory.path}/noaman.xlsx').writeAsBytes(bytes);
+      File('${directory.path}/$stage-$division.xlsx').writeAsBytes(bytes);
   // print(file);
   print(directory.path);
   try {
-    await OpenFile.open('${directory.path}/noaman.xlsx').catchError((err) {
-      print('Error: $err'); // Prints 401.
-    });
+    await OpenFile.open('${directory.path}/$stage-$division.xlsx');
   } catch (e) {
     print(e);
   }
@@ -263,6 +301,9 @@ class StudentsAttendanceCard extends ConsumerWidget {
               Container(
                 width: 80,
                 height: 80,
+                child: Center(
+                  child: Text(student.firstName![0].toString()),
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).primaryColor),
                   shape: BoxShape.circle,

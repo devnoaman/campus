@@ -27,6 +27,28 @@ class CalenderNotifier extends StateNotifier<List<NeatCleanCalendarEvent>> {
     getData();
   }
 
+  add()async{
+
+
+  var url = Uri.parse('$workingUrl/tasks/monday');
+var id = await getUserID();
+print(id);
+  var res = await http.post(
+    url,
+      headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+    body:jsonEncode( {
+      "user": id
+    })
+  );
+  // print (res.body);
+  // print(model.tasks);
+  // return model.tasks;
+
+
+  }
+
   getData() async {
     var url = Uri.parse('$workingUrl$eventsEndPoint');
 

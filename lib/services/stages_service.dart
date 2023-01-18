@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:campus/data/constants.dart';
+import 'package:campus/data/save.dart';
 import 'package:campus/models/student_list_model.dart';
 import 'package:dio/dio.dart';
 
@@ -7,11 +8,14 @@ class StudentsService {
   final Dio _client;
 
   StudentsService(this._client);
-  fetchAll({statge = 'forth', division = 'a'}) async {
+
+  fetchAll({statge = 'fdeforth', division = 'fefa'}) async {
+    var stage = await getStage();
+    var division = await getDivision();
     try {
       final response = await _client.get(
         studentsEndPoint,
-        queryParameters: {"statge": statge, "division": division},
+        queryParameters: {"statge": stage, "division": division},
         options: Options(
           contentType: Headers.jsonContentType,
         ),

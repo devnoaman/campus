@@ -5,9 +5,7 @@ import 'package:campus/models/adds_model/adds_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-
-final addsProvider =
-    StateNotifierProvider<AddsNotifier, List<Add>>((ref) {
+final addsProvider = StateNotifierProvider<AddsNotifier, List<Add>>((ref) {
   return AddsNotifier();
 });
 
@@ -25,7 +23,6 @@ class AddsNotifier extends StateNotifier<List<Add>> {
     final AddsModel list = AddsModel.fromJson(json.decode(res.body));
 
     state = [...?list.adds];
-
   }
 
   remove(id) async {
@@ -34,7 +31,5 @@ class AddsNotifier extends StateNotifier<List<Add>> {
     var res = await http.delete(url, body: {'id': id});
 
     state = state.where((e) => e.id != id).toList();
-
   }
 }
-

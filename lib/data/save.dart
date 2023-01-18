@@ -57,7 +57,7 @@ name
 ----------------------
 */
 
-saveFullName(fullName) async {
+saveFullName(String fullName) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('fullName', fullName);
 }
@@ -169,4 +169,44 @@ removeWelcome() async {
   await prefs.remove('Welcome');
   var token = prefs.getString('Welcome');
   return token;
+}
+
+/////////////
+
+saveStage(email) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('stage', email);
+}
+
+getStage() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var email = prefs.getString('stage');
+  return email;
+}
+
+removeStage() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('stage');
+  var email = prefs.getString('stage');
+  return email;
+}
+
+/////////////
+
+saveDivision(email) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('division', email);
+}
+
+getDivision() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var email = prefs.getString('division');
+  return email;
+}
+
+removeDivision() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('division');
+  var email = prefs.getString('division');
+  return email;
 }

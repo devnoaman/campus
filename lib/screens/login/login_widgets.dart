@@ -55,7 +55,7 @@ showErrorDialog(context, errors) async {
       title: Container(width: 240, child: Icon(Icons.high_quality)),
       content: Container(
         // color: Colors.amber,
-        height: MediaQuery.of(context).size.height * 0.3,
+        // height: MediaQuery.of(context).size.height * 0.3,
         width: MediaQuery.of(context).size.width * 0.75,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

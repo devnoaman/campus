@@ -1,3 +1,5 @@
+import 'package:campus/data/constants.dart';
+import 'package:campus/screens/calender/add_event.dart';
 import 'package:campus/screens/calender/calender_events.dart';
 import 'package:campus/screens/calender/calender_provider.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +70,14 @@ class Calender extends ConsumerWidget {
       // },),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet<void>(
+              context: context,
+              builder: (context) {
+                return AddEvent();
+              });
+          // hpush(context, );
+        },
         child: const Icon(Icons.add),
         // backgroundColor: Colors.green,
       ),

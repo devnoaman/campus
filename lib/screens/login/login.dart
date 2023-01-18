@@ -4,21 +4,23 @@ import 'package:campus/screens/login/validate.dart';
 import 'package:campus/theme/app_theme.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:provider/provider.dart';
 
-class Login extends StatefulWidget {
+class Login extends ConsumerStatefulWidget {
   static const String route = '/login';
   const Login({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  ConsumerState<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends ConsumerState<Login> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+
   final passwordFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
   var _passwordVisible = true;
@@ -26,31 +28,34 @@ class _LoginState extends State<Login> {
   loginAction() async {
     final FormState form = _formKey.currentState!;
     if (form.validate()) {
-      Provider.of<LoginProvider>(context, listen: false).login(
-        context: context,
-        email: emailController.text,
-        password: passwordController.text,
-      );
+      // // Provider.of<LoginProvider>(context, listen: false).login(
+      //   context: context,
+      //   email: emailController.text,
+      //   password: passwordController.text,
+      // );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    var auth = ref.watch(authProvider);
     Validation validation = Validation(context: context);
 
     return Scaffold(
       body: ListView(
         // alignment: AlignmentDirectional.topCenter,
         children: [
-          // Spacer(),
+          SizedBox(
+            height: 32,
+          ),
           Hero(
             tag: '111',
             child: SizedBox(
-              width: 250,
-              height: 250,
+              width: 100,
+              height: 100,
               // color: Colors.amber,
-              child: SvgPicture.asset(
-                'assets/svg/folder.svg',
+              child: Image.asset(
+                'assets/images/logo.jpeg',
               ),
             ),
           ),
@@ -235,7 +240,16 @@ class _LoginState extends State<Login> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0) +
                         MediaQuery.of(context).viewPadding,
                     child: ElevatedButton(
-                      onPressed: loginAction,
+                      onPressed: () {
+                        auth.whenOrNull(
+                          initial: () => ref.read(authProvider.notifier).login(
+                              context: context,
+                              email: emailController.text,
+                              password: passwordController.text),
+                          loading: () => print('loading'),
+                        );
+                      },
+                      // loginAction,
                       // onPressed: () => openLoadingDialog(context),
                       child: Container(
                         // margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -246,11 +260,17 @@ class _LoginState extends State<Login> {
                         height: 50,
                         // width: 200,
                         child: Center(
-                          child: Text(
-                            'التسجيل',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
+                            child: auth.whenOrNull(
+                                        loading: () {
+                                    return CircularProgressIndicator(
+                                      color: Colors.white,
+                                    );
+                                  }, initial: () {
+                                    return Text(
+                                      'التسجيل',
+                                      style: TextStyle(fontSize: 18),
+                                    );
+                        })),
                       ),
                       style: ButtonStyle(
                         shape:

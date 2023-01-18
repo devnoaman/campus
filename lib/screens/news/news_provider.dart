@@ -11,10 +11,7 @@ final newsProvider = FutureProvider((ref) async {
   var res = await http.get(
     url,
   );
-  // print(json.decode(res.body));
   final NewsModel list =
       NewsModel.fromJson(json.decode(res.body)); // json.decode(res.body);
-  // print(list);
   return list.news;
-  // return list.map((e) => NewsModel.fromJson(e).news).toList();
 });

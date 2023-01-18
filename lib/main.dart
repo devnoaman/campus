@@ -1,5 +1,7 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:io';
+
 import 'package:campus/base.dart';
 import 'package:campus/notifications/notifications_impl.dart';
 import 'package:campus/notifications/notifications_service.dart';
@@ -55,27 +57,30 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  print(fcmToken);
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  if (!Platform.isMacOS) {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    print(fcmToken);
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+  }
+
   runApp(riverpod.UncontrolledProviderScope(
     container: container,
     child: MultiProvider(
       providers: [
         ChangeNotifierProvider<Screen>(create: (_) => Screen()),
         ChangeNotifierProvider<AppLanguage>(create: (_) => AppLanguage()),
-        ChangeNotifierProvider(create: (_) => LoginProvider()),
+        // ChangeNotifierProvider(create: (_) => LoginProvider()),
       ],
       child: const MyApp(),
     ),

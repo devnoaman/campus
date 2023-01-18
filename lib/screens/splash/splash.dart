@@ -116,8 +116,8 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
               width: 250,
               height: 250,
               // color: Colors.amber,
-              child: SvgPicture.asset(
-                'assets/svg/folder.svg',
+              child: Image.asset(
+                'assets/images/logo.jpeg',
                 // animations: const ['idle', 'curves'],
                 // controllers: [_controller],
                 // onInit: (_) => setState(() {}),

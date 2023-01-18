@@ -32,11 +32,8 @@ class HomeNotifier extends StateNotifier<List<StudentListModel>> {
 
     var _endpointProvider = StudentsService(_client.init());
     data = await _endpointProvider.fetchAll();
-    state = [...data];
-    // state = UiState.loaded(data);
-    // print(data);
-
-    // return data;
+    state = [...data]
+      ..sort((a, b) => a.firstName!.compareTo(b.firstName.toString()));
   }
 
   edit({required id, required bool? isAttende}) {
@@ -48,7 +45,6 @@ class HomeNotifier extends StateNotifier<List<StudentListModel>> {
         else
           std,
     ];
-
     // state = UiState.loaded(data);
   }
 }

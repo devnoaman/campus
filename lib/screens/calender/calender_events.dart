@@ -604,10 +604,11 @@ class _CalendarState extends State<Calendar> {
                   final String end =
                       DateFormat('HH:mm').format(event.endTime).toString();
                   return Dismissible(
+                    key: UniqueKey(),
                     onDismissed: (direction) {
                       widget.onEventDismissed!(event);
                     },
-                    key: Key('dfdfdfd'),
+                    // key: Key('dfdfdfd'),
                     child: Container(
                       height: 75.0,
                       child: InkWell(
